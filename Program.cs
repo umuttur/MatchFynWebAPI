@@ -41,6 +41,9 @@ builder.Services.AddDbContext<MatchFynDbContext>(options =>
 builder.Services.AddDbContext<IdentityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
+builder.Services.AddDbContext<ChatDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ChatConnection")));
+
 // Add Identity Framework
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 {
@@ -116,8 +119,21 @@ builder.Services.AddCors(options =>
 // Add AutoMapper for object mapping
 builder.Services.AddAutoMapper(typeof(Program));
 
+// Add SignalR for real-time communication
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = builder.Environment.IsDevelopment();
+    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+});
+
 // Add custom services
 builder.Services.AddScoped<MatchFynWebAPI.Services.ITokenService, MatchFynWebAPI.Services.TokenService>();
+
+// Add background services for 7/24 automatic room management
+builder.Services.AddScoped<MatchFynWebAPI.Services.Background.IRoomManagementService, MatchFynWebAPI.Services.Background.RoomManagementService>();
+builder.Services.AddScoped<MatchFynWebAPI.Services.Background.IMatchingService, MatchFynWebAPI.Services.Background.MatchingService>();
+builder.Services.AddHostedService<MatchFynWebAPI.Services.Background.RoomManagementBackgroundService>();
 
 builder.Services.AddControllers();
 
@@ -177,6 +193,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Map SignalR Hub
+app.MapHub<MatchFynWebAPI.Hubs.ChatHub>("/chatHub");
 
 // Add professional logging
 app.UseSerilogRequestLogging();

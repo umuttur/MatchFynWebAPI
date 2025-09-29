@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MatchFynWebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca96a857b370321135760ea988011699ec070fe3")]
 [assembly: System.Reflection.AssemblyProductAttribute("MatchFynWebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MatchFynWebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

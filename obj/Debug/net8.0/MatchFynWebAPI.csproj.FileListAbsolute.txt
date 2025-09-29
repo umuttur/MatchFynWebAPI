@@ -146,3 +146,6 @@ C:\PROJELER-FLUTTER\MatchFynWebAPI\MatchFynWebAPI\bin\Debug\net8.0\Serilog.Setti
 C:\PROJELER-FLUTTER\MatchFynWebAPI\MatchFynWebAPI\bin\Debug\net8.0\Serilog.Sinks.Console.dll
 C:\PROJELER-FLUTTER\MatchFynWebAPI\MatchFynWebAPI\bin\Debug\net8.0\Serilog.Sinks.Debug.dll
 C:\PROJELER-FLUTTER\MatchFynWebAPI\MatchFynWebAPI\bin\Debug\net8.0\Serilog.Sinks.File.dll
+C:\PROJELER-FLUTTER\MatchFynWebAPI\MatchFynWebAPI\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\PROJELER-FLUTTER\MatchFynWebAPI\MatchFynWebAPI\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll
+C:\PROJELER-FLUTTER\MatchFynWebAPI\MatchFynWebAPI\obj\Debug\net8.0\MatchFynWebAPI.sourcelink.json
