@@ -1,0 +1,150 @@
+2025-09-29 14:31:03.912 +03:00 [INF] Executed DbCommand (145ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [MatchFynIdentityDB];
+2025-09-29 14:31:03.994 +03:00 [INF] Executed DbCommand (50ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [MatchFynIdentityDB] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2025-09-29 14:31:04.007 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-09-29 14:31:04.048 +03:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2025-09-29 14:31:04.050 +03:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-09-29 14:31:04.060 +03:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-09-29 14:31:04.065 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-09-29 14:31:04.074 +03:00 [INF] Applying migration '20250929112723_InitialIdentityCreate'.
+2025-09-29 14:31:04.126 +03:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [MatchFyn_Roles] (
+    [Id] nvarchar(450) NOT NULL,
+    [Description] nvarchar(500) NULL,
+    [CreatedAt] datetime2 NOT NULL DEFAULT (GETUTCDATE()),
+    [IsActive] bit NOT NULL DEFAULT CAST(1 AS bit),
+    [Priority] int NOT NULL DEFAULT 0,
+    [Name] nvarchar(256) NULL,
+    [NormalizedName] nvarchar(256) NULL,
+    [ConcurrencyStamp] nvarchar(max) NULL,
+    CONSTRAINT [PK_MatchFyn_Roles] PRIMARY KEY ([Id])
+);
+2025-09-29 14:31:04.131 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [MatchFyn_Users] (
+    [Id] nvarchar(450) NOT NULL,
+    [FullName] nvarchar(100) NOT NULL,
+    [DateOfBirth] datetime2 NOT NULL,
+    [Gender] nvarchar(10) NULL,
+    [City] nvarchar(100) NULL,
+    [ProfileImageUrl] nvarchar(500) NULL,
+    [Bio] nvarchar(1000) NULL,
+    [CreatedAt] datetime2 NOT NULL DEFAULT (GETUTCDATE()),
+    [UpdatedAt] datetime2 NOT NULL DEFAULT (GETUTCDATE()),
+    [IsActive] bit NOT NULL DEFAULT CAST(1 AS bit),
+    [IsEmailVerified] bit NOT NULL DEFAULT CAST(0 AS bit),
+    [IsPhoneVerified] bit NOT NULL DEFAULT CAST(0 AS bit),
+    [LastLoginAt] datetime2 NULL,
+    [RefreshToken] nvarchar(500) NULL,
+    [RefreshTokenExpiryTime] datetime2 NULL,
+    [UserName] nvarchar(256) NULL,
+    [NormalizedUserName] nvarchar(256) NULL,
+    [Email] nvarchar(256) NULL,
+    [NormalizedEmail] nvarchar(256) NULL,
+    [EmailConfirmed] bit NOT NULL,
+    [PasswordHash] nvarchar(max) NULL,
+    [SecurityStamp] nvarchar(max) NULL,
+    [ConcurrencyStamp] nvarchar(max) NULL,
+    [PhoneNumber] nvarchar(450) NULL,
+    [PhoneNumberConfirmed] bit NOT NULL,
+    [TwoFactorEnabled] bit NOT NULL,
+    [LockoutEnd] datetimeoffset NULL,
+    [LockoutEnabled] bit NOT NULL,
+    [AccessFailedCount] int NOT NULL,
+    CONSTRAINT [PK_MatchFyn_Users] PRIMARY KEY ([Id])
+);
+2025-09-29 14:31:04.135 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [MatchFyn_RoleClaims] (
+    [Id] int NOT NULL IDENTITY,
+    [RoleId] nvarchar(450) NOT NULL,
+    [ClaimType] nvarchar(max) NULL,
+    [ClaimValue] nvarchar(max) NULL,
+    CONSTRAINT [PK_MatchFyn_RoleClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_MatchFyn_RoleClaims_MatchFyn_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [MatchFyn_Roles] ([Id]) ON DELETE CASCADE
+);
+2025-09-29 14:31:04.139 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [MatchFyn_UserClaims] (
+    [Id] int NOT NULL IDENTITY,
+    [UserId] nvarchar(450) NOT NULL,
+    [ClaimType] nvarchar(max) NULL,
+    [ClaimValue] nvarchar(max) NULL,
+    CONSTRAINT [PK_MatchFyn_UserClaims] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_MatchFyn_UserClaims_MatchFyn_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [MatchFyn_Users] ([Id]) ON DELETE CASCADE
+);
+2025-09-29 14:31:04.144 +03:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [MatchFyn_UserLogins] (
+    [LoginProvider] nvarchar(450) NOT NULL,
+    [ProviderKey] nvarchar(450) NOT NULL,
+    [ProviderDisplayName] nvarchar(max) NULL,
+    [UserId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_MatchFyn_UserLogins] PRIMARY KEY ([LoginProvider], [ProviderKey]),
+    CONSTRAINT [FK_MatchFyn_UserLogins_MatchFyn_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [MatchFyn_Users] ([Id]) ON DELETE CASCADE
+);
+2025-09-29 14:31:04.147 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [MatchFyn_UserRoles] (
+    [UserId] nvarchar(450) NOT NULL,
+    [RoleId] nvarchar(450) NOT NULL,
+    CONSTRAINT [PK_MatchFyn_UserRoles] PRIMARY KEY ([UserId], [RoleId]),
+    CONSTRAINT [FK_MatchFyn_UserRoles_MatchFyn_Roles_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [MatchFyn_Roles] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_MatchFyn_UserRoles_MatchFyn_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [MatchFyn_Users] ([Id]) ON DELETE CASCADE
+);
+2025-09-29 14:31:04.150 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [MatchFyn_UserTokens] (
+    [UserId] nvarchar(450) NOT NULL,
+    [LoginProvider] nvarchar(450) NOT NULL,
+    [Name] nvarchar(450) NOT NULL,
+    [Value] nvarchar(max) NULL,
+    CONSTRAINT [PK_MatchFyn_UserTokens] PRIMARY KEY ([UserId], [LoginProvider], [Name]),
+    CONSTRAINT [FK_MatchFyn_UserTokens_MatchFyn_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [MatchFyn_Users] ([Id]) ON DELETE CASCADE
+);
+2025-09-29 14:31:04.170 +03:00 [INF] Executed DbCommand (17ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'ConcurrencyStamp', N'CreatedAt', N'Description', N'IsActive', N'Name', N'NormalizedName', N'Priority') AND [object_id] = OBJECT_ID(N'[MatchFyn_Roles]'))
+    SET IDENTITY_INSERT [MatchFyn_Roles] ON;
+INSERT INTO [MatchFyn_Roles] ([Id], [ConcurrencyStamp], [CreatedAt], [Description], [IsActive], [Name], [NormalizedName], [Priority])
+VALUES (N'001e8c78-bb14-4ec7-acc0-235eb7ada4c0', NULL, '2025-09-29T11:27:22.8001875Z', N'Regular user with standard features', CAST(1 AS bit), N'User', N'USER', 80),
+(N'139c9928-af89-47e3-b101-714a1ee73dfb', NULL, '2025-09-29T11:27:22.8001879Z', N'Premium user with extended features', CAST(1 AS bit), N'PremiumUser', N'PREMİUMUSER', 70),
+(N'2e198ca8-1dbf-4cf6-8e0e-063444b82ad2', NULL, '2025-09-29T11:27:22.8001865Z', N'Content moderator with limited admin access', CAST(1 AS bit), N'Moderator', N'MODERATOR', 90),
+(N'82432d0a-8c64-46c3-a1cc-bd66a669ee03', NULL, '2025-09-29T11:27:22.8001857Z', N'System administrator with full access', CAST(1 AS bit), N'Admin', N'ADMİN', 100);
+IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'ConcurrencyStamp', N'CreatedAt', N'Description', N'IsActive', N'Name', N'NormalizedName', N'Priority') AND [object_id] = OBJECT_ID(N'[MatchFyn_Roles]'))
+    SET IDENTITY_INSERT [MatchFyn_Roles] OFF;
+2025-09-29 14:31:04.173 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_MatchFyn_RoleClaims_RoleId] ON [MatchFyn_RoleClaims] ([RoleId]);
+2025-09-29 14:31:04.176 +03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_ApplicationRoles_IsActive] ON [MatchFyn_Roles] ([IsActive]);
+2025-09-29 14:31:04.181 +03:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [RoleNameIndex] ON [MatchFyn_Roles] ([NormalizedName]) WHERE [NormalizedName] IS NOT NULL;
+2025-09-29 14:31:04.183 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_MatchFyn_UserClaims_UserId] ON [MatchFyn_UserClaims] ([UserId]);
+2025-09-29 14:31:04.184 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_MatchFyn_UserLogins_UserId] ON [MatchFyn_UserLogins] ([UserId]);
+2025-09-29 14:31:04.186 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_MatchFyn_UserRoles_RoleId] ON [MatchFyn_UserRoles] ([RoleId]);
+2025-09-29 14:31:04.188 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [EmailIndex] ON [MatchFyn_Users] ([NormalizedEmail]);
+2025-09-29 14:31:04.190 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_ApplicationUsers_CreatedAt] ON [MatchFyn_Users] ([CreatedAt]);
+2025-09-29 14:31:04.192 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_ApplicationUsers_Email] ON [MatchFyn_Users] ([Email]) WHERE [Email] IS NOT NULL;
+2025-09-29 14:31:04.194 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_ApplicationUsers_IsActive] ON [MatchFyn_Users] ([IsActive]);
+2025-09-29 14:31:04.195 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_ApplicationUsers_PhoneNumber] ON [MatchFyn_Users] ([PhoneNumber]);
+2025-09-29 14:31:04.197 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [UserNameIndex] ON [MatchFyn_Users] ([NormalizedUserName]) WHERE [NormalizedUserName] IS NOT NULL;
+2025-09-29 14:31:04.199 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250929112723_InitialIdentityCreate', N'8.0.0');
